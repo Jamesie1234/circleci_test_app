@@ -1,9 +1,6 @@
 version: 2.1
-
 orbs:
   docker: circleci/docker@2.2.0
-  #node: circleci/node@5.1.0
-
 jobs:
   run_build_and_push:
     executor: docker/publish
@@ -24,7 +21,6 @@ jobs:
           commad: |
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             docker push ${DOCKER_USERNAME}/flask-kubernetes:1.0
-
   run_minikube_cluster_and_deploy_app:
     machine: true
     parameters:
@@ -36,7 +32,7 @@ jobs:
           at: ~/project
       - run:
           name: authenticate and pull image from docker hub
-          commad: |
+          commad: >
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
             sudo dpkg -i minikube_latest_amd64.deb
             minikube start --vm-driver=docker --kubernetes-version=v1.19.0
@@ -48,14 +44,12 @@ jobs:
             kubectl apply -f deployment.yaml
 
 
-## Commit to a branch
 commit: &only_commit
   filters:
     branches:
-        only:
-            - /add.*/
+      only:
+        - /add.*/
 
-## For main workflow
 only_on_main_branch: &only_on_main_branch
   filters:
     branches:
@@ -64,24 +58,22 @@ only_on_main_branch: &only_on_main_branch
 
 workflows:
   version: 2.1
-
   build_app:
     jobs:
       - run_build_and_push:
           environment: dev
+          context: circleci_test_app
           <<: *only_commit
 
   deploy_app_dev:
     jobs:
       - run_build_and_push:
           environment: dev
+          context: circleci_test_app
           <<: *only_on_main_branch
       - run_minikube_cluster_and_deploy_app:
           environment: dev
+          context: circleci_test_app
           <<: *only_on_main_branch
           requires:
             - run_build_and_push
-
-
-
-
