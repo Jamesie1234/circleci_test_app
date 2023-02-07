@@ -76,7 +76,7 @@ workflows:
       - run_build_and_push:
           environment: dev
           <<: *only_on_main_branch
-      - run_build_and_push:
+      - run_minikube_cluster_and_deploy_app:
           environment: dev
           <<: *only_on_main_branch
           requires:
