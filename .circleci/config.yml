@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@2.2.0
-  node: circleci/node@5.1.0
+  #node: circleci/node@5.1.0
 
 jobs:
   run_build_and_push:
@@ -48,9 +48,39 @@ jobs:
             kubectl apply -f deployment.yaml
 
 
+## Commit to a branch
+commit: &only_commit
+  filters:
+    branches:
+        only:
+            - /add.*/
+
+## For main workflow
+only_on_main_branch: &only_on_main_branch
+  filters:
+    branches:
+      only: main
 
 
+workflows:
+  version: 2.1
 
+  build_app:
+    jobs:
+      - run_build_and_push:
+          environment: dev
+          <<: *only_commit
+
+  deploy_app_dev:
+    jobs:
+      - run_build_and_push:
+          environment: dev
+          <<: *only_on_main_branch
+      - run_build_and_push:
+          environment: dev
+          <<: *only_on_main_branch
+          requires:
+            - run_build_and_push
 
 
 
