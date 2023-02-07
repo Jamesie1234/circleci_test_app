@@ -1,0 +1,57 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.2.0
+  node: circleci/node@5.1.0
+
+jobs:
+  run_build_and_push:
+    executor: docker/publish
+    parameters:
+      environment:
+        type: string
+    steps:
+      - checkout
+      - attache_workspace:
+          at: ~/project
+      - run:
+          name: build app server container and tag
+          command: |
+            docker build -t flask-kubernetes .
+            docker tag flask-kubernetes ${DOCKER_USERNAME}/flask-kubernetes:1.0
+      - run:
+          name: authenticate and push image to docker hub
+          commad: |
+            docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+            docker push ${DOCKER_USERNAME}/flask-kubernetes:1.0
+
+  run_minikube_cluster_and_deploy_app:
+    machine: true
+    parameters:
+      environment:
+        type: string
+    steps:
+      - checkout
+      - attache_workspace:
+          at: ~/project
+      - run:
+          name: authenticate and pull image from docker hub
+          commad: |
+            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+            sudo dpkg -i minikube_latest_amd64.deb
+            minikube start --vm-driver=docker --kubernetes-version=v1.19.0
+      - run:
+          name: Minikube cluster configure
+          commad: |
+            #kubectl config view > kubectl.conf
+            docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+            kubectl apply -f deployment.yaml
+
+
+
+
+
+
+
+
+
