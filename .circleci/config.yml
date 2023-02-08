@@ -43,7 +43,6 @@ jobs:
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             kubectl apply -f deployment.yaml
 
-
 commit: &only_commit
   filters:
     branches:
