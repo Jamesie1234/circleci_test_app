@@ -58,7 +58,7 @@ only_on_main_branch: &only_on_main_branch
 
 
 workflows:
-  version: 2.1
+  version: 2
   build_container_app:
     jobs:
       - build_container_and_push:
