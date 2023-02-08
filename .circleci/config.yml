@@ -26,6 +26,9 @@ jobs:
     machine:
       image: ubuntu-2004:202010-01
     steps:
+      - checkout
+      - attache_workspace:
+          at: ~/project
       - run:
           name: Configure Minikube
           command: |
