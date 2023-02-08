@@ -39,23 +39,24 @@ jobs:
           command: |
             minikube status
       - run:
+          name: Check configure
+          command: |
+            minikube config view
+      - run:
           name: install dependencies
           command: |
             sudo snap install kubectl --classic
             kubectl version --client
-#            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/v1.26.0)/bin/linux/amd64/kubectl"
-#            curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/v1.26.0)/bin/linux/amd64/kubectl.sha256"
-#            chmod +x kubectl
-#            mkdir -p ~/.local/bin
-#            mv ./kubectl ~/.local/bin/kubectl
-#            PATH=$PATH:~/.local/bin
-#            install kubectl /usr/local/bin/kubectl
       - run:
           name: Minikube cluster configure
           command: |
             #kubectl config view > kubectl.conf
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             kubectl apply -f deployment.yaml
+      - run:
+          nanme: Cat minicube config
+          command:
+            cat ~/.mini
 
 
 #  run_minikube_cluster_and_deploy_app:
