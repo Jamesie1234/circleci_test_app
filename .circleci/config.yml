@@ -18,7 +18,7 @@ jobs:
             docker tag flask-kubernetes ${DOCKER_USERNAME}/flask-kubernetes:1.0
       - run:
           name: authenticate and push image to docker hub
-          commad: |
+          command: |
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             docker push ${DOCKER_USERNAME}/flask-kubernetes:1.0
 
