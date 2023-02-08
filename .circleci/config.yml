@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 orbs:
   docker: circleci/docker@2.2.0
 jobs:
@@ -22,28 +22,50 @@ jobs:
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             docker push ${DOCKER_USERNAME}/flask-kubernetes:1.0
 
-
   run_minikube_cluster_and_deploy_app:
-    machine: true
-    parameters:
-      environment:
-        type: string
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
-      - checkout
-      - attache_workspace:
-          at: ~/project
       - run:
-          name: authenticate and pull image from docker hub
+          name: Configure Minikube
           command: |
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
             sudo dpkg -i minikube_latest_amd64.deb
             minikube start --vm-driver=docker --kubernetes-version=v1.19.0
+            minikube addons enable registry
+      - run:
+          name: Check status
+          command: |
+            minikube status
       - run:
           name: Minikube cluster configure
           command: |
             #kubectl config view > kubectl.conf
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             kubectl apply -f deployment.yaml
+
+
+#  run_minikube_cluster_and_deploy_app:
+#    executor: arm64
+#    parameters:
+#      environment:
+#        type: string
+#    steps:
+#      - checkout
+#      - attache_workspace:
+#          at: ~/project
+#      - run:
+#          name: authenticate and pull image from docker hub
+#          command: |
+#            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+#            sudo dpkg -i minikube_latest_amd64.deb
+#            minikube start --vm-driver=docker --kubernetes-version=v1.19.0
+#      - run:
+#          name: Minikube cluster configure
+#          command: |
+#            #kubectl config view > kubectl.conf
+#            docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+#            kubectl apply -f deployment.yaml
 
 commit: &only_commit
   filters:
@@ -58,7 +80,7 @@ only_on_main_branch: &only_on_main_branch
 
 
 workflows:
-  version: 2
+  version: 2.1
   build_container_app:
     jobs:
       - build_container_and_push:
