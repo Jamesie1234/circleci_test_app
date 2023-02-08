@@ -99,10 +99,12 @@ workflows:
       - run_minikube_cluster:
           context: circleci_test_app
           <<: *only_commit
+          environment: dev
 
       - build_container_and_push:
           context: circleci_test_app
           <<: *only_commit
+          environment: dev
           requires:
             - build_container_and_push
 
