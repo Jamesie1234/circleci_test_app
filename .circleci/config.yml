@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Check configure
           command: |
-            minikube config view
+            cat ~/.kube/config
       - run:
           name: install dependencies
           command: |
@@ -53,6 +53,10 @@ jobs:
             #kubectl config view > kubectl.conf
             docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
             kubectl apply -f deployment.yaml
+      - run:
+          name: Minikube cluster configure
+          command: |
+            kubectl get pods -A
 
 
 #  run_minikube_cluster_and_deploy_app:
