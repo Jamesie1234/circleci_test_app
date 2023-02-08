@@ -9,8 +9,6 @@ jobs:
         type: string
     steps:
       - checkout
-      - attache_workspace:
-          at: ~/project
       - run:
           name: build app server container and tag
           command: |
