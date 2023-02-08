@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.2.0
 jobs:
-  run_build_and_push:
+  build_container_and_push:
     executor: docker/publish
     parameters:
       environment:
@@ -57,16 +57,16 @@ only_on_main_branch: &only_on_main_branch
 
 workflows:
   version: 2.1
-  build_app:
+  build_container_app:
     jobs:
-      - run_build_and_push:
+      - build_container_and_push:
           environment: dev
           context: circleci_test_app
           <<: *only_commit
 
-  deploy_app_dev:
+  deploy_containber_app_dev:
     jobs:
-      - run_build_and_push:
+      - build_container_and_push:
           environment: dev
           context: circleci_test_app
           <<: *only_on_main_branch
@@ -75,4 +75,4 @@ workflows:
           context: circleci_test_app
           <<: *only_on_main_branch
           requires:
-            - run_build_and_push
+            - build_container_and_push
