@@ -41,8 +41,9 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            snap install kubectl --classic
+            sudo snap install kubectl --classic
             kubectl version --client
+            yum update
 #            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/v1.26.0)/bin/linux/amd64/kubectl"
 #            curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/v1.26.0)/bin/linux/amd64/kubectl.sha256"
 #            chmod +x kubectl
