@@ -1,7 +1,10 @@
 version: 2.1
 orbs:
   docker: circleci/docker@2.2.0
-  minikube: ccpgames/minikube@0.0.1
+executors:
+  minikube:
+    docker:
+      - image: ccpgames/minikube@0.0.1
 jobs:
   build_container_and_push:
     executor: docker/publish
