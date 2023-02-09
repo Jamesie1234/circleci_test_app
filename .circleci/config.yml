@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   docker: circleci/docker@2.2.0
+  minikube: ccpgames/minikube@0.0.1
 jobs:
   build_container_and_push:
     executor: docker/publish
@@ -21,8 +22,7 @@ jobs:
             docker push ${DOCKER_USERNAME}/flask-kubernetes:1.0
 
   run_minikube_cluster:
-    machine:
-      image: ubuntu-2004:202010-01
+    executor: minikube
     parameters:
       environment:
         type: string
