@@ -76,7 +76,7 @@ only_on_main_branch: &only_on_main_branch
       only: main
 
 workflows:
-  version: 2.1
+  #version: 2.1
   minikube-example:
     jobs:
       - run_minikube_cluster:
